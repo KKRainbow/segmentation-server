@@ -89,9 +89,9 @@ func (dag *DAGBuilder) buildMatrix(str []rune, maxLength int, forward bool) [][]
 		idx := matchIdx[i]
 		wordLen := len([]rune(word))
 		if forward {
-			matrix[idx + 1][wordLen - 1] = dag.phraseIndexMap[word]
-		} else {
 			matrix[idx + wordLen - 1 + 1][wordLen - 1] = dag.phraseIndexMap[word]
+		} else {
+			matrix[idx + 1][wordLen - 1] = dag.phraseIndexMap[word]
 		}
 	}
 
