@@ -4,7 +4,7 @@ import (
 	"os"
 	"bufio"
 	"strings"
-	"github.com/naturali/segmentation-server/aca"
+	"github.com/KKRainbow/segmentation-server/aca"
 )
 
 type DAGBuilder struct {

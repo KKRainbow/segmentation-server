@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"strconv"
 	"os"
-	"github.com/naturali/segmentation-server/segmentation"
+	"github.com/KKRainbow/segmentation-server/segmentation"
 )
 
 func getcurdir() (string, error) {
