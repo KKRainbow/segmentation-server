@@ -151,6 +151,7 @@ func parseSegmentatoinResult(seg []int32, str []rune) (res []string, err error) 
 	// accepts batches of text data as input. batchSize == 1
 	// output[0].Value() contains the segment information
 	// tag_map{0:B, 1:M, 2:E, 3:S }
+	seg = seg[1:]
 	if len(str) == 0 {
 		return nil, errors.New("empty str")
 	}
