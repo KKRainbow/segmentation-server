@@ -24,6 +24,32 @@
       </el-col>
     </el-row>
 
+    <el-row type="flex" justify="center">
+      <el-col :span="20">
+        <el-input placeholder="请输入Phrase File的绝对路径" v-model="params.phrase">
+          <template slot="prepend">Phrase File</template>
+        </el-input>
+      </el-col>
+    </el-row>
+
+    <el-row type="flex" justify="start">
+      <el-col :span="2"></el-col>
+      <el-col :span="8">
+        <el-input placeholder="请输入Max Step" v-model="params.maxStep">
+          <template slot="prepend">Max Step</template>
+        </el-input>
+      </el-col>
+    </el-row>
+
+    <el-row type="flex" justify="start">
+      <el-col :span="2"></el-col>
+      <el-col :span="8">
+        <el-input placeholder="请输入Max Step" v-model="params.maxLength">
+          <template slot="prepend">Max Length</template>
+        </el-input>
+      </el-col>
+    </el-row>
+
     <el-row type="flex" justify="start">
       <el-col :span="2"></el-col>
       <el-col :span="8">
@@ -97,6 +123,9 @@
         params: {
           modelFile: "",
           dict: "",
+          phrase: "",
+          maxStep: "",
+          maxLength: "",
           batch: "",
           lines: "",
         },
@@ -120,12 +149,25 @@
       },
 
       loadOptions() {
-        this.params = JSON.parse(localStorage.getItem("params"));
+        if (!localStorage.getItem("params")) {
+          return;
+        }
+        let tmp = JSON.parse(localStorage.getItem("params"));
+        if (!!tmp.modelFile && !!tmp.dict) {
+          this.params = tmp;
+        }
       },
 
       loadLogs() {
+        if (!localStorage.getItem("logs")) {
+          return;
+        }
         this.logs = JSON.parse(localStorage.getItem("logs"));
         this.activeLogTabName = this.logs[0].name;
+
+        if (this.logs[0].name === undefined) {
+          this.logs = []
+        }
       },
 
       saveLogs() {
@@ -139,6 +181,9 @@
         let data = {
           'model-file': this.params.modelFile,
           'dict-file' : this.params.dict,
+          'phrase-file' : this.params.phrase,
+          'max-step': this.params.maxStep,
+          'max-length': this.params.maxLength,
           'batch-size' : this.params.batch,
           'strings' : this.params.lines,
         };

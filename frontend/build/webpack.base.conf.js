@@ -6,7 +6,7 @@ var webpack = require('webpack')
 
 var defines = {
   "api_url" : {
-    production: JSON.stringify('http://127.0.0.1:8888/'),
+    production: JSON.stringify('http://octr:8888/'),
     development: JSON.stringify('http://127.0.0.1:8888/')
   },
   "is_dev" : {
