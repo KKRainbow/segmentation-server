@@ -6,6 +6,7 @@ import (
 	"errors"
 	"strconv"
 	"io/ioutil"
+"fmt"
 )
 
 type Segmentation struct {
@@ -66,6 +67,10 @@ func (s *Segmentation) SegmentLine(lines []string) (results [][]string, err erro
 		inferText := strings.Replace(line, " ", "", -1)
 		idxs_b_fd[counter] = s.dagBuilder.buildMatrix([]rune(inferText), s.maxLength,true)
 		idxs_b_bd[counter] = s.dagBuilder.buildMatrix([]rune(inferText), s.maxLength,false)
+		if idx < originLen {
+			fmt.Println(idxs_b_fd)
+			fmt.Println(idxs_b_bd)
+		}
 		length[counter] = int32(len([]rune(inferText)))
 		counter++
 
@@ -151,6 +156,7 @@ func parseSegmentatoinResult(seg []int32, str []rune) (res []string, err error) 
 	// accepts batches of text data as input. batchSize == 1
 	// output[0].Value() contains the segment information
 	// tag_map{0:B, 1:M, 2:E, 3:S }
+	fmt.Println(seg)
 	seg = seg[1:]
 	if len(str) == 0 {
 		return nil, errors.New("empty str")
@@ -171,12 +177,10 @@ func parseSegmentatoinResult(seg []int32, str []rune) (res []string, err error) 
 		case 1:
 			continue
 		case 2:
-			if i > beg {
-				res = append(res, string(str[beg:i+1]))
-			}
+			res = append(res, string(str[beg:i+1]))
 			beg = i + 1
 		case 3:
-			res = append(res, string(str[i:i+1]))
+			res = append(res, string(str[beg:i + 1]))
 			beg = i + 1
 		}
 	}

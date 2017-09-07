@@ -3,6 +3,7 @@ package segmentation
 import (
 	"os"
 	"bufio"
+	"fmt"
 	"strings"
 	"github.com/KKRainbow/segmentation-server/aca"
 )
@@ -34,8 +35,8 @@ func NewDAGBuilder(wordFile, phraseFile string, maxStep int) *DAGBuilder {
 	}
 	defer phraseFd.Close()
 
-	wordReader := bufio.NewReader(wordFd)
-	phraseReader := bufio.NewReader(phraseFd)
+	wordReader := bufio.NewScanner(wordFd)
+	phraseReader := bufio.NewScanner(phraseFd)
 
 	phrases := make([]string, 0)
 
@@ -47,10 +48,17 @@ func NewDAGBuilder(wordFile, phraseFile string, maxStep int) *DAGBuilder {
 
 	line_num = int32(3)
 
-	readLineByLine := func(reader *bufio.Reader) {
-		for line, err := reader.ReadString('\n'); err == nil; line, err = reader.ReadString('\n') {
-			line = strings.TrimSpace(line)
-			if len(line) > maxStep {
+	readLineByLine := func(scanner *bufio.Scanner) {
+		for scanner.Scan() {
+			line := scanner.Text()
+			if len(line) != 0 && line[0] == ' ' {
+				line = " "
+			} else if  len(line) == 0 {
+				line = "\n"
+			} else {
+				line = strings.TrimSpace(line)
+			}
+			if len([]rune(line)) > maxStep {
 				continue
 			}
 			if _, ok := dag.phraseIndexMap[line]; ok {
@@ -63,10 +71,13 @@ func NewDAGBuilder(wordFile, phraseFile string, maxStep int) *DAGBuilder {
 	}
 
 	readLineByLine(wordReader)
+	fmt.Println("Word size:", len(phrases))
 	readLineByLine(phraseReader)
+	fmt.Println("Total size:", len(phrases))
 
 	dag.matcher = aca.NewAhoCorasickMatcher()
 	dag.matcher.Build(phrases)
+
 
 	dag.maxStep = maxStep
 	return dag
